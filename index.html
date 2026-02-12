@@ -9,7 +9,6 @@
 <meta name="theme-color" content="#0b1120">
 
 <style>
-
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 
@@ -18,7 +17,6 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: radial-gradient(circle at top, #111827 0%, #0b1120 40%, #0f172a 100%);
   color: #e2e8f0;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
 }
@@ -30,11 +28,21 @@ body {
 }
 
 .app-card {
+  position: relative;
   backdrop-filter: blur(14px);
   background: rgba(30, 41, 59, 0.65);
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.clear-cache {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.6;
 }
 
 h1 {
@@ -54,12 +62,18 @@ input {
   color: white;
   text-align: center;
   outline: none;
+  margin-bottom: 12px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .toggle-btn {
-  width: 100%;
+  flex: 1;
   padding: 12px;
-  margin-bottom: 12px;
   border-radius: 14px;
   border: none;
   font-size: 13px;
@@ -78,11 +92,28 @@ input {
   padding: 14px;
   border-radius: 14px;
   margin-bottom: 10px;
+  transition: 0.2s;
+}
+
+.card.destacada {
+  border: 1px solid #22c55e;
+  box-shadow: 0 0 10px rgba(34,197,94,0.3);
+}
+
+.card.opaca {
+  opacity: 0.45;
 }
 
 .parcela { font-size: 17px; font-weight: 600; }
 .total { font-size: 11px; opacity: 0.7; }
 
+.ver-todas {
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.7;
+  margin: 10px 0;
+}
 </style>
 </head>
 
@@ -91,68 +122,50 @@ input {
 <div class="container">
   <div class="app-card">
 
+    <div class="clear-cache" id="clearCacheBtn">↻</div>
+
     <h1>Simulação</h1>
 
     <input type="text" id="valor" placeholder="R$ 0,00">
 
-    <button id="modoBtn" class="toggle-btn">
-      cred
-    </button>
-
-    <button id="txespecBtn" class="toggle-btn">
-      txespec
-    </button>
+    <div class="button-group">
+      <button id="modoBtn" class="toggle-btn">Cred</button>
+      <button id="txespecBtn" class="toggle-btn">Tx Especial</button>
+    </div>
 
     <div id="resultado"></div>
+    <div id="verTodas" class="ver-todas" style="display:none;">
+      Ver todas parcelas
+    </div>
 
   </div>
 </div>
 
 <script>
 
-// ================= CARTÃO =================
-
 let taxas = {
-  1: 0.03019, 
-  2: 0.04559, 
-  3: 0.05408, 
-  4: 0.06259,
-  5: 0.07101, 
-  6: 0.07957, 
-  7: 0.0866, 
-  8: 0.09518,
-  9: 0.10388, 
-  10: 0.11248, 
-  11: 0.12133, 
-  12: 0.13007,
-  13: 0.13896, 
-  14: 0.14784, 
-  15: 0.15675, 
-  16: 0.16579,
-  17: 0.17483, 
-  18: 0.18387
+  1: 0.03019, 2: 0.04559, 3: 0.05408, 4: 0.06259,
+  5: 0.07101, 6: 0.07957, 7: 0.0866, 8: 0.09518,
+  9: 0.10388, 10: 0.11248, 11: 0.12133, 12: 0.13007,
+  13: 0.13896, 14: 0.14784, 15: 0.15675,
+  16: 0.16579, 17: 0.17483, 18: 0.18387
 };
 
-// ================= CONSIGNADO (COEFICIENTE) =================
-
 const coeficientesConsignado = {
-  12: 0.109,
-  24: 0.0608,
-  36: 0.0449,
-  48: 0.0372,
-  60: 0.0327,
-  72: 0.0298,
-  84: 0.0278,
-  96: 0.0264
+  12: 0.109, 24: 0.0608, 36: 0.0449,
+  48: 0.0372, 60: 0.0327,
+  72: 0.0298, 84: 0.0278, 96: 0.0264
 };
 
 let modoSimulacao = "cartao";
 let txEspecialAtiva = false;
+let mostrarTodas = false;
 
 const input = document.getElementById("valor");
 const resultadoDiv = document.getElementById("resultado");
 const txBtn = document.getElementById("txespecBtn");
 const modoBtn = document.getElementById("modoBtn");
+const verTodasBtn = document.getElementById("verTodas");
 
 function arredondarParaCima(valor) {
   return Math.ceil(valor * 100) / 100;
@@ -169,53 +182,48 @@ function limparNumero(valor) {
   return parseFloat(valor.replace(/\D/g, "")) / 100;
 }
 
-// Alternar modo
-
 modoBtn.addEventListener("click", () => {
-
   if (modoSimulacao === "cartao") {
     modoSimulacao = "consignado";
-    modoBtn.textContent = "Plano Especial";
+    modoBtn.textContent = "Plano";
     txBtn.style.display = "none";
   } else {
     modoSimulacao = "cartao";
     modoBtn.textContent = "Cred";
     txBtn.style.display = "block";
   }
-
-  const valorAtual = limparNumero(input.value);
-  if (valorAtual) calcular(valorAtual);
+  calcularAtual();
 });
-
-// Taxa especial cartão
 
 txBtn.addEventListener("click", () => {
   txEspecialAtiva = !txEspecialAtiva;
   txBtn.classList.toggle("ativo");
-  const valorAtual = limparNumero(input.value);
-  if (valorAtual) calcular(valorAtual);
+  calcularAtual();
 });
 
-// Input
+verTodasBtn.addEventListener("click", () => {
+  mostrarTodas = !mostrarTodas;
+  verTodasBtn.textContent = mostrarTodas ? "Mostrar menos" : "Ver todas parcelas";
+  calcularAtual();
+});
 
 input.addEventListener("input", (e) => {
-
   let numero = limparNumero(e.target.value);
-
   if (!numero) {
     resultadoDiv.innerHTML = "";
     input.value = "";
     return;
   }
-
   input.value = formatarMoeda(numero);
   calcular(numero);
 });
 
-// Cálculo principal
+function calcularAtual() {
+  const valor = limparNumero(input.value);
+  if (valor) calcular(valor);
+}
 
 function calcular(valor) {
-
   resultadoDiv.innerHTML = "";
 
   if (modoSimulacao === "cartao") {
@@ -223,46 +231,65 @@ function calcular(valor) {
     for (let n = 1; n <= 18; n++) {
 
       let taxa = taxas[n] || 0;
-
-      if (txEspecialAtiva && n <= 3) {
-        taxa = 0;
-      }
+      if (txEspecialAtiva && n <= 3) taxa = 0;
 
       const valorCorrigido = valor / (1 - taxa);
       const parcela = arredondarParaCima(valorCorrigido / n);
       const totalFinal = arredondarParaCima(parcela * n);
 
-      renderParcela(n, parcela, totalFinal);
+      let classes = "card";
+
+      if (n <= 3) classes += " destacada";
+      if (n > 12 && !mostrarTodas) continue;
+      if (n > 12) classes += " opaca";
+
+      resultadoDiv.innerHTML += `
+        <div class="${classes}">
+          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
+          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
+        </div>
+      `;
     }
 
+    verTodasBtn.style.display = "block";
+
   } else {
+    verTodasBtn.style.display = "none";
 
-    Object.keys(coeficientesConsignado).forEach(n => {
+    Object.keys(coeficientesConsignado)
+      .sort((a,b)=>a-b)
+      .forEach(n => {
+        const coef = coeficientesConsignado[n];
+        const parcela = arredondarParaCima(valor * coef);
+        const totalFinal = arredondarParaCima(parcela * n);
 
-      const coef = coeficientesConsignado[n];
-
-      const parcela = arredondarParaCima(valor * coef);
-      const totalFinal = arredondarParaCima(parcela * n);
-
-      renderParcela(n, parcela, totalFinal);
-    });
+        resultadoDiv.innerHTML += `
+          <div class="card">
+            <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
+            <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
+          </div>
+        `;
+      });
   }
 }
 
-function renderParcela(n, parcela, totalFinal) {
-
-  resultadoDiv.innerHTML += `
-    <div class="card">
-      <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-      <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-    </div>
-  `;
-}
+// LIMPAR CACHE
+document.getElementById("clearCacheBtn").addEventListener("click", async () => {
+  if ("caches" in window) {
+    const keys = await caches.keys();
+    for (let key of keys) {
+      await caches.delete(key);
+    }
+  }
+  localStorage.clear();
+  sessionStorage.clear();
+  alert("Cache limpo. Atualizando...");
+  location.reload(true);
+});
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
-
 </script>
 
 </body>
