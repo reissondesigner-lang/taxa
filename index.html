@@ -137,7 +137,7 @@ input {
 />
 
     <div class="button-group">
-      <button id="modoBtn" class="toggle-btn">Cred</button>
+      <button id="modoBtn" class="toggle-btn">Card</button>
       <button id="txespecBtn" class="toggle-btn">Tx Especial</button>
     </div>
 
@@ -193,7 +193,7 @@ function limparNumero(valor) {
 modoBtn.addEventListener("click", () => {
   if (modoSimulacao === "cartao") {
     modoSimulacao = "consignado";
-    modoBtn.textContent = "Plano";
+    modoBtn.textContent = "Plano Especial";
     txBtn.style.display = "none";
   } else {
     modoSimulacao = "cartao";
