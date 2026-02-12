@@ -314,7 +314,7 @@ function renderProdutos() {
   categorias.forEach(cat => {
     const container = document.getElementById("cat-" + cat.replace(/\s/g, ""));
     produtos.filter(p => p.categoria === cat).forEach(p => {
-      if (!carrinho[p.nome]) carrinho[p.nome] = 0;
+      if (carrinho[p.nome] === undefined) carrinho[p.nome] = 0;
       container.innerHTML += `
         <div class="produto-item">
           <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
