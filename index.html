@@ -1,419 +1,269 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulação</title>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0b1120">
+<title>Simulador</title>
 
 <style>
-*{box-sizing:border-box;}
-html,body{height:100%;}
-
 body{
-margin:0;
-font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-background:radial-gradient(circle at top,#111827 0%,#0b1120 40%,#0f172a 100%);
-color:#e2e8f0;
-display:flex;
-justify-content:center;
+  font-family:Arial;
+  padding:15px;
+  background:#f4f4f4;
 }
 
-.container{
-width:100%;
-max-width:420px;
-padding:28px 18px 40px 18px;
+h2{margin:0;}
+
+.topo{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
 }
 
-.app-card{
-position:relative;
-backdrop-filter:blur(14px);
-background:rgba(30,41,59,0.65);
-border-radius:20px;
-padding:24px;
-box-shadow:0 20px 40px rgba(0,0,0,0.4);
+button{
+  padding:8px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
 }
 
-.clear-cache{
-position:absolute;
-top:12px;
-right:16px;
-font-size:12px;
-cursor:pointer;
-opacity:0.6;
+.small-btn{
+  font-size:12px;
+  padding:5px 8px;
 }
 
-.produtos-btn{
-position:absolute;
-top:12px;
-left:16px;
-font-size:12px;
-cursor:pointer;
-opacity:0.7;
+.botoes-topo{
+  display:flex;
+  gap:8px;
+  margin:10px 0;
 }
 
-.hidden{display:none;}
-
-h1{
-text-align:center;
-font-weight:600;
-font-size:20px;
-margin-bottom:20px;
+#modoBtn,#txespecBtn{
+  flex:1;
 }
 
-input{
-width:100%;
-padding:16px;
-font-size:24px;
-border-radius:14px;
-border:none;
-background:rgba(15,23,42,0.9);
-color:white;
-text-align:center;
-outline:none;
-margin-bottom:12px;
+#valor{
+  width:100%;
+  padding:12px;
+  font-size:18px;
+  margin-bottom:10px;
+  border-radius:6px;
+  border:1px solid #ccc;
 }
 
-.button-group{
-display:flex;
-gap:10px;
-margin-bottom:12px;
+.parcela{
+  padding:6px;
+  margin:4px 0;
+  border-radius:6px;
+  background:#fff;
 }
 
-.toggle-btn{
-flex:1;
-padding:12px;
-border-radius:14px;
-border:none;
-font-size:13px;
-background:rgba(51,65,85,0.8);
-color:#cbd5e1;
-cursor:pointer;
+.destaque{
+  background:#d4edda;
+  font-weight:bold;
 }
 
-.toggle-btn.ativo{
-background:linear-gradient(90deg,#16a34a,#22c55e);
-color:white;
+.opaca{
+  opacity:0.4;
 }
 
-.card{
-background:rgba(15,23,42,0.95);
-padding:14px;
-border-radius:14px;
-margin-bottom:10px;
-transition:0.2s;
+#produtosPagina{
+  display:none;
 }
-
-.card.destacada{
-border:1px solid #3990C9;
-box-shadow:0 0 10px #225678;
-}
-
-.card.opaca{opacity:0.45;}
-
-.parcela{font-size:17px;font-weight:600;}
-.total{font-size:11px;opacity:0.7;}
-
-.ver-todas{
-text-align:center;
-font-size:12px;
-cursor:pointer;
-opacity:0.7;
-margin:10px 0;
-}
-
-/* PRODUTOS */
 
 .produto-item{
-background:rgba(15,23,42,0.95);
-padding:12px;
-border-radius:14px;
-margin-bottom:10px;
-}
-
-.produto-item h4{
-margin:0 0 4px 0;
-font-size:14px;
-}
-
-.produto-item p{
-margin:0 0 6px 0;
-font-size:11px;
-opacity:0.7;
-}
-
-.qtd-control{
-display:flex;
-align-items:center;
-justify-content:space-between;
-margin-top:8px;
-}
-
-.qtd-control button{
-background:#334155;
-color:white;
-border:none;
-border-radius:8px;
-width:28px;
-height:28px;
-font-size:16px;
-cursor:pointer;
-}
-
-.top-bar-produtos{
-display:flex;
-justify-content:space-between;
-margin-bottom:12px;
-font-size:13px;
-cursor:pointer;
+  background:#fff;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
 }
 </style>
 </head>
 
 <body>
-<div class="container">
 
-<!-- SIMULAÇÃO -->
-<div id="paginaSimulacao">
-<div class="app-card">
-
-<div class="produtos-btn" onclick="abrirProdutos()">Produtos</div>
-<div class="clear-cache" id="clearCacheBtn">↻</div>
-
-<h1>Simulação</h1>
-
-<input type="text" id="valor"
-placeholder="R$ 0,00"
-inputmode="numeric"
-pattern="[0-9]*"
-autocomplete="off"
-enterkeyhint="done"/>
-
-<div class="button-group">
-<button id="modoBtn" class="toggle-btn">Card</button>
-<button id="txespecBtn" class="toggle-btn">Tx Especial</button>
+<div class="topo">
+  <h2>Simulador</h2>
+  <button onclick="limparCache()" class="small-btn">Limpar</button>
 </div>
 
-<div id="resultado"></div>
-<div id="verTodas" class="ver-todas" style="display:none;">
-Ver todas parcelas
-</div>
+<div id="principal">
+
+  <div class="botoes-topo">
+    <button id="modoBtn">Card</button>
+    <button id="txespecBtn">Tx Especial</button>
+  </div>
+
+  <input 
+    type="text"
+    id="valor"
+    placeholder="R$ 0,00"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    autocomplete="off"
+    enterkeyhint="done"
+  />
+
+  <button onclick="abrirProdutos()">Produtos</button>
+
+  <div id="resultado"></div>
+  <button id="verTodas" style="display:none;">Ver todas parcelas</button>
 
 </div>
+
+<div id="produtosPagina">
+  <h3>Produtos</h3>
+  <div id="listaProdutos"></div>
+  <button onclick="fecharProdutos()">Voltar</button>
 </div>
 
-<!-- PRODUTOS -->
-<div id="paginaProdutos" class="hidden">
-<div class="app-card">
-
-<div class="top-bar-produtos">
-<div onclick="voltarSimulacao()">← Voltar</div>
-<div>Total: <span id="totalProdutos">R$ 0,00</span></div>
-</div>
-
-<div id="listaProdutos"></div>
-
-</div>
-</div>
-
-</div>
+<script src="taxas.js"></script>
+<script src="produtos.js"></script>
 
 <script>
-
-/* ===== PRODUTOS ===== */
-
-const produtos=[
-{nome:"ARS Casal",desc:"Colchão sem massagem",valor:8610},
-{nome:"ARA com Base",desc:"Reparador de água",valor:2742},
-{nome:"Travesseiro FIR",desc:"Tecnologia FIR",valor:532},
-{nome:"Bracelete Triple",desc:"Mais vendido",valor:554},
-{nome:"Palmilha Premium",desc:"Alta performance",valor:323}
-];
-
-let carrinho={};
-
-function abrirProdutos(){
-document.getElementById("paginaSimulacao").classList.add("hidden");
-document.getElementById("paginaProdutos").classList.remove("hidden");
-}
-
-function voltarSimulacao(){
-atualizarInputComProdutos();
-document.getElementById("paginaProdutos").classList.add("hidden");
-document.getElementById("paginaSimulacao").classList.remove("hidden");
-}
-
-function carregarProdutos(){
-const lista=document.getElementById("listaProdutos");
-lista.innerHTML="";
-produtos.forEach((p,i)=>{
-carrinho[i]=carrinho[i]||0;
-lista.innerHTML+=`
-<div class="produto-item">
-<h4>${p.nome} - ${formatarMoeda(p.valor)}</h4>
-<p>${p.desc}</p>
-<div class="qtd-control">
-<button onclick="diminuir(${i})">−</button>
-<div id="qtd-${i}">${carrinho[i]}</div>
-<button onclick="aumentar(${i})">+</button>
-</div>
-</div>`;
-});
-}
-
-function aumentar(i){carrinho[i]++;atualizarProdutos();}
-function diminuir(i){if(carrinho[i]>0)carrinho[i]--;atualizarProdutos();}
-
-function atualizarProdutos(){
-let total=0;
-produtos.forEach((p,i)=>{
-document.getElementById(`qtd-${i}`).innerText=carrinho[i];
-total+=carrinho[i]*p.valor;
-});
-document.getElementById("totalProdutos").innerText=formatarMoeda(total);
-}
-
-function atualizarInputComProdutos(){
-let total=0;
-produtos.forEach((p,i)=>{total+=carrinho[i]*p.valor;});
-if(total>0){
-input.value=formatarMoeda(total);
-calcular(total);
-}
-}
-
-carregarProdutos();
-
-/* ===== SIMULAÇÃO ORIGINAL COMPLETA ===== */
-
-let taxas={
-1:0.03019,2:0.04559,3:0.05408,4:0.06259,
-5:0.07101,6:0.07957,7:0.0866,8:0.09518,
-9:0.10388,10:0.11248,11:0.12133,12:0.13007,
-13:0.13896,14:0.14784,15:0.15675,
-16:0.16579,17:0.17483,18:0.18387
-};
-
-const coeficientesConsignado={
-12:0.109,24:0.0608,36:0.0449,
-48:0.0372,60:0.0327,
-72:0.0298,84:0.0278,96:0.0264
-};
 
 let modoSimulacao="cartao";
 let txEspecialAtiva=false;
 let mostrarTodas=false;
 
 const input=document.getElementById("valor");
-const resultadoDiv=document.getElementById("resultado");
-const txBtn=document.getElementById("txespecBtn");
+const resultado=document.getElementById("resultado");
 const modoBtn=document.getElementById("modoBtn");
+const txBtn=document.getElementById("txespecBtn");
 const verTodasBtn=document.getElementById("verTodas");
 
-function arredondarParaCima(v){return Math.ceil(v*100)/100;}
-function formatarMoeda(v){
-return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-}
-function limparNumero(v){return parseFloat(v.replace(/\D/g,""))/100;}
+input.addEventListener("input",formatarMoeda);
 
 modoBtn.addEventListener("click",()=>{
-if(modoSimulacao==="cartao"){
-modoSimulacao="consignado";
-modoBtn.textContent="Plano Especial";
-txBtn.style.display="none";
-}else{
-modoSimulacao="cartao";
-modoBtn.textContent="Card";
-txBtn.style.display="block";
-}
-calcularAtual();
+  if(modoSimulacao==="cartao"){
+    modoSimulacao="consignado";
+    modoBtn.textContent="Consignado";
+    txBtn.style.display="none";
+  }else{
+    modoSimulacao="cartao";
+    modoBtn.textContent="Card";
+    txBtn.style.display="block";
+  }
+  calcularAtual();
 });
 
 txBtn.addEventListener("click",()=>{
-txEspecialAtiva=!txEspecialAtiva;
-txBtn.classList.toggle("ativo");
-calcularAtual();
+  txEspecialAtiva=!txEspecialAtiva;
+  txBtn.style.background=txEspecialAtiva?"#28a745":"";
+  calcularAtual();
 });
 
 verTodasBtn.addEventListener("click",()=>{
-mostrarTodas=!mostrarTodas;
-verTodasBtn.textContent=mostrarTodas?"Mostrar menos":"Ver todas parcelas";
-calcularAtual();
+  mostrarTodas=!mostrarTodas;
+  verTodasBtn.textContent=mostrarTodas?"Mostrar menos":"Ver todas parcelas";
+  calcularAtual();
 });
 
-input.addEventListener("input",(e)=>{
-let numero=limparNumero(e.target.value);
-if(!numero){resultadoDiv.innerHTML="";input.value="";return;}
-input.value=formatarMoeda(numero);
-calcular(numero);
-});
+function formatarMoeda(){
+  let valor=limparNumero(input.value);
+  if(!valor){
+    resultado.innerHTML="";
+    return;
+  }
+  input.value=valor.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+  calcular(valor);
+}
+
+function limparNumero(v){
+  return Number(v.replace(/\D/g,""))/100;
+}
 
 function calcularAtual(){
-const valor=limparNumero(input.value);
-if(valor)calcular(valor);
+  let valor=limparNumero(input.value);
+  if(valor) calcular(valor);
 }
 
 function calcular(valor){
-resultadoDiv.innerHTML="";
 
-if(modoSimulacao==="cartao"){
-for(let n=1;n<=18;n++){
-let taxa=taxas[n]||0;
-if(txEspecialAtiva && n<=3)taxa=0;
+  resultado.innerHTML="";
 
-const valorCorrigido=valor/(1-taxa);
-const parcela=arredondarParaCima(valorCorrigido/n);
-const totalFinal=arredondarParaCima(parcela*n);
+  if(modoSimulacao==="cartao"){
 
-if(n>12 && !mostrarTodas)continue;
+    for(let i=0;i<18;i++){
 
-let classes="card";
-if(n<=3)classes+=" destacada";
-if(n>12)classes+=" opaca";
+      if(!mostrarTodas && i>=12) continue;
 
-resultadoDiv.innerHTML+=`
-<div class="${classes}">
-<div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-<div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-</div>`;
+      let parcela;
+
+      if(txEspecialAtiva && i < 3){
+        parcela = valor / (i+1);
+      }else{
+        parcela = (valor * (1 + TAXAS_CARTAO[i])) / (i+1);
+      }
+
+      let div=document.createElement("div");
+      div.className="parcela";
+
+      if(i<3) div.classList.add("destaque");
+      if(i>=12) div.classList.add("opaca");
+
+      div.textContent=`${i+1}x de ${parcela.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}`;
+
+      resultado.appendChild(div);
+    }
+
+    verTodasBtn.style.display="block";
+
+  }else{
+
+    for(let p in COEFICIENTES_CONSIGNADO){
+      let parcela=valor*COEFICIENTES_CONSIGNADO[p];
+      let div=document.createElement("div");
+      div.className="parcela";
+      div.textContent=`${p}x de ${parcela.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}`;
+      resultado.appendChild(div);
+    }
+
+    verTodasBtn.style.display="none";
+  }
 }
-verTodasBtn.style.display="block";
-}else{
-verTodasBtn.style.display="none";
-Object.keys(coeficientesConsignado)
-.sort((a,b)=>a-b)
-.forEach(n=>{
-const coef=coeficientesConsignado[n];
-const parcela=arredondarParaCima(valor*coef);
-const totalFinal=arredondarParaCima(parcela*n);
 
-resultadoDiv.innerHTML+=`
-<div class="card">
-<div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-<div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-</div>`;
-});
-}
+function abrirProdutos(){
+  document.getElementById("principal").style.display="none";
+  document.getElementById("produtosPagina").style.display="block";
+  carregarProdutos();
 }
 
-/* LIMPAR CACHE */
-document.getElementById("clearCacheBtn").addEventListener("click",async()=>{
-if("caches" in window){
-const keys=await caches.keys();
-for(let key of keys){await caches.delete(key);}
+function fecharProdutos(){
+  document.getElementById("principal").style.display="block";
+  document.getElementById("produtosPagina").style.display="none";
 }
-localStorage.clear();
-sessionStorage.clear();
-alert("Cache limpo. Atualizando...");
-location.reload(true);
-});
 
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("service-worker.js");
+function carregarProdutos(){
+  let lista=document.getElementById("listaProdutos");
+  lista.innerHTML="";
+  PRODUTOS.forEach(p=>{
+    let div=document.createElement("div");
+    div.className="produto-item";
+    div.innerHTML=`
+      <strong>${p.nome}</strong><br>
+      ${p.descricao}<br>
+      <strong>${p.valor.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</strong><br>
+      <button onclick="selecionarProduto(${p.valor})">Selecionar</button>
+    `;
+    lista.appendChild(div);
+  });
+}
+
+function selecionarProduto(valor){
+  fecharProdutos();
+  input.value=valor.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+  calcular(valor);
+}
+
+function limparCache(){
+  localStorage.clear();
+  alert("Cache limpo");
 }
 
 </script>
+
 </body>
 </html>
