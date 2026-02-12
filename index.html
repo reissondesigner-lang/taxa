@@ -124,7 +124,7 @@ input:focus {
 }
 
 .card.opaca {
-  opacity: 0.4;
+  opacity: 0.35;
 }
 
 .parcela {
@@ -162,7 +162,7 @@ input:focus {
       <input 
         type="text" 
         id="valor" 
-        placeholder="R$ 0,00"
+        placeholder="R$ 3.048,00"
         inputmode="decimal"
         autocomplete="off"
       >
@@ -220,14 +220,21 @@ const resultadoDiv = document.getElementById("resultado");
 const txBtn = document.getElementById("txespecBtn");
 
 txBtn.addEventListener("click", function() {
+
   txEspecialAtiva = !txEspecialAtiva;
   txBtn.classList.toggle("ativo");
+
+  // Vibração leve (se suportado)
+  if (navigator.vibrate) {
+    navigator.vibrate(20);
+  }
 
   const valorAtual = limparNumero(input.value);
   if (valorAtual) calcular(valorAtual);
 });
 
 input.addEventListener("input", function(e) {
+
   let numero = limparNumero(e.target.value);
 
   if (!numero) {
@@ -260,7 +267,7 @@ function calcular(valor) {
 
     if (n <= 3) {
       classe = "card destaque";
-    } else if (n > 12) {
+    } else if (n >= 13) {
       classe = "card opaca";
     }
 
