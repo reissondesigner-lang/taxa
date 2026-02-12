@@ -1,17 +1,5 @@
-const PRODUTOS = [
-  {
-    nome:"Colchão Premium",
-    descricao:"Espuma alta densidade",
-    valor:3048
-  },
-  {
-    nome:"Colchão Luxo",
-    descricao:"Molas ensacadas",
-    valor:4590
-  },
-  {
-    nome:"Base Box",
-    descricao:"Estrutura reforçada",
-    valor:890
-  }
+const produtos = [
+  { nome: "Produto A", valor: 199.90 },
+  { nome: "Produto B", valor: 149.90 },
+  { nome: "Produto C", valor: 89.90 }
 ];
