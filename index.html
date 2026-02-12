@@ -30,8 +30,7 @@ h1 {
 }
 
 .input-group {
-  position: relative;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 input {
@@ -45,6 +44,24 @@ input {
   text-align: right;
   outline: none;
   box-shadow: inset 0 0 0 1px #334155;
+}
+
+.toggle-btn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  background: #334155;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.toggle-btn.ativo {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  color: white;
 }
 
 .resultado {
@@ -66,6 +83,10 @@ input {
 
 .card.destaque {
   background: linear-gradient(90deg, #1d4ed8, #2563eb);
+}
+
+.card.opaca {
+  opacity: 0.45;
 }
 
 .parcela {
@@ -94,12 +115,14 @@ input {
     >
   </div>
 
+  <button id="txespecBtn" class="toggle-btn">txespec</button>
+
   <div class="resultado" id="resultado"></div>
 </div>
 
 <script>
 
-// 🔧 COLOQUE SUAS TAXAS AQUI
+// 🔧 COLOQUE SUAS TAXAS REAIS AQUI
 const taxas = {
   1: 0.00,
   2: 0.035,
@@ -121,6 +144,8 @@ const taxas = {
   18: 0.120
 };
 
+let txEspecialAtiva = false;
+
 function arredondarParaCima(valor) {
   return Math.ceil(valor * 100) / 100;
 }
@@ -138,6 +163,17 @@ function limparNumero(valor) {
 
 const input = document.getElementById("valor");
 const resultadoDiv = document.getElementById("resultado");
+const txBtn = document.getElementById("txespecBtn");
+
+txBtn.addEventListener("click", function() {
+  txEspecialAtiva = !txEspecialAtiva;
+  txBtn.classList.toggle("ativo");
+
+  const valorAtual = limparNumero(input.value);
+  if (valorAtual) {
+    calcular(valorAtual);
+  }
+});
 
 input.addEventListener("input", function(e) {
   let numero = limparNumero(e.target.value);
@@ -154,15 +190,27 @@ function calcular(valor) {
   resultadoDiv.innerHTML = "";
 
   for (let n = 1; n <= 18; n++) {
-    const taxa = taxas[n] || 0;
+
+    let taxa = taxas[n] || 0;
+
+    if (txEspecialAtiva && n <= 3) {
+      taxa = 0;
+    }
+
     const valorCorrigido = valor / (1 - taxa);
     const parcela = arredondarParaCima(valorCorrigido / n);
     const totalFinal = arredondarParaCima(parcela * n);
 
-    const destaque = n <= 3 ? "card destaque" : "card";
+    let classe = "card";
+
+    if (n <= 3) {
+      classe = "card destaque";
+    } else if (n > 12) {
+      classe = "card opaca";
+    }
 
     resultadoDiv.innerHTML += `
-      <div class="${destaque}">
+      <div class="${classe}">
         <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
         <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
       </div>
