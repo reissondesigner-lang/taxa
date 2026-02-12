@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcelamento</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  padding: 24px;
+}
+
+h1 {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  background: #1e293b;
+  color: white;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.resultado {
+  margin-top: 25px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.parcela {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.total {
+  font-size: 13px;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>Parcelamento</h1>
+
+  <input type="number" id="valor" placeholder="Valor da venda" step="0.01">
+  <button onclick="calcular()">Calcular</button>
+
+  <div class="resultado" id="resultado"></div>
+</div>
+
+<script>
+
+// 🔧 COLOQUE SUAS TAXAS REAIS AQUI
+const taxas = {
+  1: 0.00,
+  2: 0.035,
+  3: 0.042,
+  4: 0.048,
+  5: 0.055,
+  6: 0.060,
+  7: 0.065,
+  8: 0.070,
+  9: 0.075,
+  10: 0.080,
+  11: 0.085,
+  12: 0.090,
+  13: 0.095,
+  14: 0.100,
+  15: 0.105,
+  16: 0.110,
+  17: 0.115,
+  18: 0.120
+};
+
+function arredondarParaCima(valor) {
+  return Math.ceil(valor * 100) / 100;
+}
+
+function calcular() {
+  const valor = parseFloat(document.getElementById("valor").value);
+  const resultadoDiv = document.getElementById("resultado");
+  resultadoDiv.innerHTML = "";
+
+  if (!valor || valor <= 0) {
+    resultadoDiv.innerHTML = "Digite um valor válido.";
+    return;
+  }
+
+  for (let n = 1; n <= 18; n++) {
+    const taxa = taxas[n] || 0;
+    const valorCorrigido = valor / (1 - taxa);
+    const parcela = arredondarParaCima(valorCorrigido / n);
+    const totalFinal = arredondarParaCima(parcela * n);
+
+    resultadoDiv.innerHTML += `
+      <div class="card">
+        <div class="parcela">${n}x de R$ ${parcela.toFixed(2)}</div>
+        <div class="total">Total: R$ ${totalFinal.toFixed(2)}</div>
+      </div>
+    `;
+  }
+}
+
+// registrar service worker
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+
+</script>
+
+</body>
+</html>
