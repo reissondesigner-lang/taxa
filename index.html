@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Simulação</title>
+
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0b1120">
 
 <style>
-/* --- Estilos originais mantidos --- */
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
@@ -19,34 +19,123 @@ body {
   display: flex;
   justify-content: center;
 }
-.container { width: 100%; max-width: 420px; padding: 28px 18px 40px 18px; }
-.app-card { backdrop-filter: blur(14px); background: rgba(30, 41, 59, 0.65); border-radius: 20px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; }
-.top-bar { display: flex; justify-content: space-between; align-items: center; }
-.clear-cache, .produtos-btn, .voltar-btn, .limpar-btn { font-size: 12px; cursor: pointer; opacity: 0.8; }
-h1 { text-align: center; font-weight: 600; font-size: 20px; margin: 20px 0; }
-input { width: 100%; padding: 16px; font-size: 24px; border-radius: 14px; border: none; background: rgba(15, 23, 42, 0.9); color: white; text-align: center; outline: none; margin-bottom: 12px; }
-.button-group { display: flex; gap: 10px; margin-bottom: 12px; }
-.toggle-btn { flex: 1; padding: 12px; border-radius: 14px; border: none; font-size: 13px; background: rgba(51,65,85,0.8); color: #cbd5e1; cursor: pointer; }
-.toggle-btn.ativo { background: linear-gradient(90deg, #16a34a, #22c55e); color: white; }
-.card { background: rgba(15, 23, 42, 0.95); padding: 14px; border-radius: 14px; margin-bottom: 10px; }
-.card.destacada { border: 1px solid #3990C9; box-shadow: 0 0 10px #225678; }
+.container {
+  width: 100%;
+  max-width: 420px;
+  padding: 28px 18px 40px 18px;
+}
+.app-card {
+  backdrop-filter: blur(14px);
+  background: rgba(30, 41, 59, 0.65);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  position: relative;
+}
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.clear-cache, .produtos-btn, .voltar-btn, .limpar-btn {
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+h1 {
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  margin: 20px 0;
+}
+input {
+  width: 100%;
+  padding: 16px;
+  font-size: 24px;
+  border-radius: 14px;
+  border: none;
+  background: rgba(15, 23, 42, 0.9);
+  color: white;
+  text-align: center;
+  outline: none;
+  margin-bottom: 12px;
+}
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.toggle-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+  font-size: 13px;
+  background: rgba(51,65,85,0.8);
+  color: #cbd5e1;
+  cursor: pointer;
+}
+.toggle-btn.ativo {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  color: white;
+}
+.card {
+  background: rgba(15, 23, 42, 0.95);
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+.card.destacada {
+  border: 1px solid #3990C9;
+  box-shadow: 0 0 10px #225678;
+}
 .card.opaca { opacity: 0.45; }
 .parcela { font-size: 17px; font-weight: 600; }
 .total { font-size: 11px; opacity: 0.7; }
-.ver-todas { text-align: center; font-size: 12px; cursor: pointer; opacity: 0.7; margin: 10px 0; }
-/* TELA PRODUTOS */
+.ver-todas {
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.7;
+  margin: 10px 0;
+}
 .tela { display: none; }
 .tela.ativa { display: block; }
-.produto-item { background: rgba(15,23,42,0.95); padding: 12px; border-radius: 12px; margin-bottom: 10px; }
+.produto-item {
+  background: rgba(15,23,42,0.95);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
 .produto-header { font-size: 14px; font-weight: 600; }
 .produto-desc { font-size: 11px; opacity: 0.6; margin: 4px 0 8px 0; }
 .produto-footer { display: flex; justify-content: space-between; align-items: center; }
 .qtd-controls { display: flex; align-items: center; gap: 8px; }
 .qtd-btn { width: 26px; height: 26px; border-radius: 6px; border: none; background: #1e293b; color: white; cursor: pointer; }
 .qtd-num { min-width: 18px; text-align: center; font-size: 13px; }
-.categoria-btn { width: 100%; padding: 10px; margin: 10px 0; background: #16a34a; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+.categoria-btn {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s;
+}
 .categoria-btn:hover { background: #22c55e; }
-.categoria-produtos { overflow: hidden; max-height: 0; padding: 0; transition: max-height 0.4s ease, padding 0.4s ease; }
+.categoria-produtos {
+  overflow: hidden;
+  max-height: 0;
+  padding: 0;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.categoria-btn .seta { transition: transform 0.4s ease; }
 .categoria-btn.ativa .seta { transform: rotate(90deg); }
 </style>
 </head>
@@ -62,7 +151,7 @@ input { width: 100%; padding: 16px; font-size: 24px; border-radius: 14px; border
         <div class="clear-cache" id="clearCacheBtn">↻</div>
       </div>
       <h1>Simulação</h1>
-      <input type="text" id="valor" placeholder="R$ 0,00" inputmode="numeric">
+      <input type="text" id="valor" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="valor-simulacao">
       <div class="button-group">
         <button id="modoBtn" class="toggle-btn">Card</button>
         <button id="txespecBtn" class="toggle-btn">Tx Especial</button>
@@ -88,43 +177,64 @@ input { width: 100%; padding: 16px; font-size: 24px; border-radius: 14px; border
 <script src="produtos.js"></script>
 
 <script>
-if(typeof taxas==="undefined") taxas={};
-if(typeof coeficientesConsignado==="undefined") coeficientesConsignado={};
-if(typeof produtos==="undefined") produtos=[];
+if (typeof taxas === "undefined") taxas = {};
+if (typeof coeficientesConsignado === "undefined") coeficientesConsignado = {};
+if (typeof produtos === "undefined") produtos = [];
 
 let carrinho = {};
+let modoSimulacao="cartao";
+let txEspecialAtiva=false;
+let mostrarTodas=false;
 let categoriasAtivas = {};
-let modoSimulacao = "cartao";
-let txEspecialAtiva = false;
-let mostrarTodas = false;
 
-const telaSimulador = document.getElementById("telaSimulador");
-const telaProdutos = document.getElementById("telaProdutos");
-const input = document.getElementById("valor");
-const resultadoDiv = document.getElementById("resultado");
+const telaSimulador=document.getElementById("telaSimulador");
+const telaProdutos=document.getElementById("telaProdutos");
+const input=document.getElementById("valor");
+const resultadoDiv=document.getElementById("resultado");
 
-// Funções utilitárias
-function formatarMoeda(v){ return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});}
-function limparNumero(v){ return parseFloat(v.replace(/\D/g,""))/100 || 0; }
-function arredondarParaCima(v){ return Math.ceil(v*100)/100; }
+// ABRIR PRODUTOS
+document.getElementById("abrirProdutos").onclick = () => {
+  telaSimulador.classList.remove("ativa");
+  telaProdutos.classList.add("ativa");
+  renderProdutos();
+};
 
-// Atualiza o total do carrinho e a simulação
-function atualizarTotal(){
-  let total = 0;
-  produtos.forEach(p => total += (carrinho[p.nome]||0) * p.valor);
-  input.value = total ? formatarMoeda(total) : "";
-  if(total) calcular(total); else resultadoDiv.innerHTML="";
-}
+// VOLTAR
+document.getElementById("voltarSimulador").onclick = () => {
+  telaProdutos.classList.remove("ativa");
+  telaSimulador.classList.add("ativa");
+};
 
-// Alterar quantidade
-function alterarQtd(nome, delta, qtdDiv){
-  carrinho[nome] = (carrinho[nome]||0) + delta;
-  if(carrinho[nome]<0) carrinho[nome]=0;
-  qtdDiv.textContent = carrinho[nome];
+// LIMPAR CARRINHO
+document.getElementById("limparCarrinho").onclick = () => {
+  carrinho = {};
+  atualizarTotal();
+  renderProdutos();
+};
+
+// FUNÇÃO PARA ALTERAR QUANTIDADE
+function alterarQtd(produto, delta, qtdDiv){
+  if(carrinho[produto]===undefined)carrinho[produto]=0;
+  carrinho[produto] += delta;
+  if(carrinho[produto]<0)carrinho[produto]=0;
+  qtdDiv.textContent = carrinho[produto];
   atualizarTotal();
 }
 
-// Toggle categoria
+// FUNÇÃO ATUALIZAR TOTAL
+function atualizarTotal(){
+  let total = 0;
+  produtos.forEach(p => total += p.valor * (carrinho[p.nome] || 0));
+  if(total>0){
+    input.value = formatarMoeda(total);
+    calcular(total);
+  } else {
+    input.value = "";
+    resultadoDiv.innerHTML = "";
+  }
+}
+
+// FUNÇÃO PARA TOGGLE DE CATEGORIA
 function toggleCategoria(cat, container, btn){
   categoriasAtivas[cat] = !categoriasAtivas[cat];
   if(categoriasAtivas[cat]){
@@ -139,44 +249,44 @@ function toggleCategoria(cat, container, btn){
   btn.textContent = `${cat} ${categoriasAtivas[cat] ? "▼" : "►"}`;
 }
 
-// Renderização de produtos
+// FUNÇÃO PARA RENDERIZAR PRODUTOS
 function renderProdutos(){
   const area = document.getElementById("produtosArea");
   area.innerHTML = "";
   const produtosPorCategoria = {};
 
-  produtos.forEach(p => {
-    if(!produtosPorCategoria[p.categoria]) produtosPorCategoria[p.categoria] = [];
+  produtos.forEach(p=>{
+    if(!produtosPorCategoria[p.categoria]) produtosPorCategoria[p.categoria]=[];
     produtosPorCategoria[p.categoria].push(p);
-    if(carrinho[p.nome] === undefined) carrinho[p.nome]=0;
+    if(carrinho[p.nome]===undefined) carrinho[p.nome]=0;
   });
 
   Object.keys(produtosPorCategoria).sort().forEach(cat=>{
     if(categoriasAtivas[cat]===undefined) categoriasAtivas[cat]=true;
 
+    // Container
+    const container = document.createElement("div");
+    container.className = "categoria-produtos";
+    container.id = "cat-" + cat;
+    container.style.maxHeight = categoriasAtivas[cat] ? container.scrollHeight+"px" : "0px";
+    container.style.padding = categoriasAtivas[cat] ? "8px 0" : "0";
+    area.appendChild(container);
+
     // Botão categoria
     const btn = document.createElement("h3");
     btn.className = "categoria-btn";
     btn.dataset.cat = cat;
-    btn.textContent = `${cat} ${categoriasAtivas[cat]?"▼":"►"}`;
-    area.appendChild(btn);
+    btn.textContent = `${cat} ${categoriasAtivas[cat] ? "▼" : "►"}`;
+    btn.onclick = () => toggleCategoria(cat, container, btn);
+    area.insertBefore(btn, container);
 
-    // Container categoria
-    const container = document.createElement("div");
-    container.className = "categoria-produtos";
-    container.id = "cat-" + cat;
-    container.style.maxHeight = categoriasAtivas[cat]?container.scrollHeight+"px":"0px";
-    container.style.padding = categoriasAtivas[cat]?"8px 0":"0";
-    area.appendChild(container);
-
-    btn.onclick = ()=> toggleCategoria(cat, container, btn);
-
+    // Produtos da categoria
     produtosPorCategoria[cat].forEach(p=>{
       const div = document.createElement("div");
       div.className = "produto-item";
       div.innerHTML = `
         <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
-        <div class="produto-desc">${p.descricao||""}</div>
+        <div class="produto-desc">${p.descricao || ""}</div>
         <div class="produto-footer">
           <div class="qtd-controls">
             <button class="qtd-btn">-</button>
@@ -190,69 +300,82 @@ function renderProdutos(){
       const qtdDiv = div.querySelector(".qtd-num");
       const btnMais = div.querySelectorAll(".qtd-btn")[1];
       const btnMenos = div.querySelectorAll(".qtd-btn")[0];
-      btnMais.onclick = ()=> alterarQtd(p.nome,1,qtdDiv);
-      btnMenos.onclick = ()=> alterarQtd(p.nome,-1,qtdDiv);
+      btnMais.onclick = () => alterarQtd(p.nome, 1, qtdDiv);
+      btnMenos.onclick = () => alterarQtd(p.nome, -1, qtdDiv);
     });
   });
 }
 
 // ---------- SIMULAÇÃO ----------
-document.getElementById("modoBtn").onclick = ()=>{
-  modoSimulacao = modoSimulacao==="cartao"?"consignado":"cartao";
-  document.getElementById("modoBtn").textContent = modoSimulacao==="cartao"?"Card":"Plano Especial";
-  document.getElementById("txespecBtn").style.display = modoSimulacao==="cartao"?"block":"none";
+function arredondarParaCima(v){return Math.ceil(v*100)/100;}
+function formatarMoeda(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});}
+function limparNumero(v){return parseFloat(v.replace(/\D/g,""))/100;}
+
+document.getElementById("modoBtn").onclick=()=>{ 
+  modoSimulacao=modoSimulacao==="cartao"?"consignado":"cartao"; 
+  document.getElementById("modoBtn").textContent=modoSimulacao==="cartao"?"Card":"Plano Especial"; 
+  document.getElementById("txespecBtn").style.display=modoSimulacao==="cartao"?"block":"none"; 
+  calcularAtual(); 
+};
+
+document.getElementById("txespecBtn").onclick=()=>{
+  txEspecialAtiva=!txEspecialAtiva; 
+  document.getElementById("txespecBtn").classList.toggle("ativo"); 
+  calcularAtual(); 
+};
+
+document.getElementById("verTodas").onclick=()=>{
+  mostrarTodas=!mostrarTodas;
+  document.getElementById("verTodas").textContent=mostrarTodas?"Mostrar menos":"Ver todas parcelas";
   calcularAtual();
 };
 
-document.getElementById("txespecBtn").onclick = ()=>{
-  txEspecialAtiva = !txEspecialAtiva;
-  document.getElementById("txespecBtn").classList.toggle("ativo");
-  calcularAtual();
-};
-
-document.getElementById("verTodas").onclick = ()=>{
-  mostrarTodas = !mostrarTodas;
-  document.getElementById("verTodas").textContent = mostrarTodas?"Mostrar menos":"Ver todas parcelas";
-  calcularAtual();
-};
-
-input.addEventListener("input", e=>{
-  let n = limparNumero(e.target.value);
+input.addEventListener("input",e=>{
+  let n=limparNumero(e.target.value);
   input.value = n ? formatarMoeda(n) : "";
   if(n) calcular(n);
 });
 
 function calcularAtual(){
-  const v = limparNumero(input.value);
+  const v=limparNumero(input.value);
   if(v) calcular(v);
 }
 
 function calcular(valor){
-  resultadoDiv.innerHTML = "";
+  resultadoDiv.innerHTML="";
   if(modoSimulacao==="cartao"){
     for(let n=1;n<=18;n++){
-      let taxa = taxas[n]||0;
-      if(txEspecialAtiva && n<=3) taxa=0;
-      const valorCorrigido = valor/(1-taxa);
-      const parcela = arredondarParaCima(valorCorrigido/n);
-      const totalFinal = arredondarParaCima(parcela*n);
-      if(n>12 && !mostrarTodas) continue;
-      let classes = "card";
-      if(n<=3) classes+=" destacada";
-      if(n>12) classes+=" opaca";
-      resultadoDiv.innerHTML += `<div class="${classes}"><div class="parcela">${n}x de ${formatarMoeda(parcela)}</div><div class="total">Total: ${formatarMoeda(totalFinal)}</div></div>`;
+      let taxa=taxas[n]||0;
+      if(txEspecialAtiva && n<=3)taxa=0;
+      const valorCorrigido=valor/(1-taxa);
+      const parcela=arredondarParaCima(valorCorrigido/n);
+      const totalFinal=arredondarParaCima(parcela*n);
+      if(n>12&&!mostrarTodas)continue;
+      let classes="card";
+      if(n<=3)classes+=" destacada";
+      if(n>12)classes+=" opaca";
+      resultadoDiv.innerHTML+=`
+        <div class="${classes}">
+          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
+          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
+        </div>`;
     }
     document.getElementById("verTodas").style.display="block";
   } else {
     document.getElementById("verTodas").style.display="none";
     Object.keys(coeficientesConsignado).sort((a,b)=>a-b).forEach(n=>{
-      const coef = coeficientesConsignado[n];
-      const parcela = arredondarParaCima(valor*coef);
-      const totalFinal = arredondarParaCima(parcela*n);
-      resultadoDiv.innerHTML += `<div class="card"><div class="parcela">${n}x de ${formatarMoeda(parcela)}</div><div class="total">Total: ${formatarMoeda(totalFinal)}</div></div>`;
+      const coef=coeficientesConsignado[n];
+      const parcela=arredondarParaCima(valor*coef);
+      const totalFinal=arredondarParaCima(parcela*n);
+      resultadoDiv.innerHTML+=`
+        <div class="card">
+          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
+          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
+        </div>`;
     });
   }
 }
 </script>
+
 </body>
 </html>
