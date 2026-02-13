@@ -192,24 +192,8 @@ const telaProdutos = document.getElementById("telaProdutos");
 const input = document.getElementById("valor");
 const resultadoDiv = document.getElementById("resultado");
 
-document.getElementById("abrirProdutos").onclick = () => {
-  telaSimulador.classList.remove("ativa");
-  telaProdutos.classList.add("ativa");
-  renderProdutos();
-};
-
-document.getElementById("voltarSimulador").onclick = () => {
-  telaProdutos.classList.remove("ativa");
-  telaSimulador.classList.add("ativa");
-};
-
-document.getElementById("limparCarrinho").onclick = () => {
-  carrinho = {};
-  atualizarTotal();
-  renderProdutos();
-};
-
-function alterarQtd(produto, delta, qtdDiv) {
+// Função que altera a quantidade de um produto no carrinho
+function alterarQtd(produto, delta, qtdDiv){
   if (carrinho[produto] === undefined) carrinho[produto] = 0;
   carrinho[produto] += delta;
   if (carrinho[produto] < 0) carrinho[produto] = 0;
@@ -217,7 +201,8 @@ function alterarQtd(produto, delta, qtdDiv) {
   atualizarTotal();
 }
 
-function atualizarTotal() {
+// Função que atualiza o total do carrinho
+function atualizarTotal(){
   let total = 0;
   produtos.forEach(p => total += p.valor * (carrinho[p.nome] || 0));
   if (total > 0) {
@@ -229,24 +214,10 @@ function atualizarTotal() {
   }
 }
 
-function toggleCategoria(cat, container, btn) {
-  categoriasAtivas[cat] = !categoriasAtivas[cat];
-  if (categoriasAtivas[cat]) {
-    container.style.maxHeight = container.scrollHeight + "px";
-    container.style.padding = "8px 0";
-    btn.classList.add("ativa");
-  } else {
-    container.style.maxHeight = "0px";
-    container.style.padding = "0";
-    btn.classList.remove("ativa");
-  }
-  btn.textContent = `${cat} ${categoriasAtivas[cat] ? "▼" : "►"}`;
-}
-
-function renderProdutos() {
+// Função que renderiza os produtos nas categorias
+function renderProdutos(){
   const area = document.getElementById("produtosArea");
   area.innerHTML = "";
-
   const produtosPorCategoria = {};
 
   produtos.forEach(p => {
@@ -258,7 +229,7 @@ function renderProdutos() {
   Object.keys(produtosPorCategoria).sort().forEach(cat => {
     if (categoriasAtivas[cat] === undefined) categoriasAtivas[cat] = true;
 
-    // Container
+    // Container de produtos da categoria
     const container = document.createElement("div");
     container.className = "categoria-produtos";
     container.id = "cat-" + cat;
@@ -266,7 +237,7 @@ function renderProdutos() {
     container.style.padding = categoriasAtivas[cat] ? "8px 0" : "0";
     area.appendChild(container);
 
-    // Botão categoria
+    // Botão para alternar a visibilidade da categoria
     const btn = document.createElement("h3");
     btn.className = "categoria-btn";
     btn.dataset.cat = cat;
@@ -274,7 +245,7 @@ function renderProdutos() {
     btn.onclick = () => toggleCategoria(cat, container, btn);
     area.insertBefore(btn, container);
 
-    // Produtos da categoria
+    // Renderiza os produtos dentro da categoria
     produtosPorCategoria[cat].forEach(p => {
       const div = document.createElement("div");
       div.className = "produto-item";
@@ -299,75 +270,6 @@ function renderProdutos() {
     });
   });
 }
-
-document.getElementById("modoBtn").onclick = () => { 
-  modoSimulacao = modoSimulacao === "cartao" ? "consignado" : "cartao"; 
-  document.getElementById("modoBtn").textContent = modoSimulacao === "cartao" ? "Card" : "Plano Especial"; 
-  document.getElementById("txespecBtn").style.display = modoSimulacao === "cartao" ? "block" : "none"; 
-  calcularAtual(); 
-};
-
-document.getElementById("txespecBtn").onclick = () => {
-  txEspecialAtiva = !txEspecialAtiva; 
-  document.getElementById("txespecBtn").classList.toggle("ativo"); 
-  calcularAtual(); 
-};
-
-document.getElementById("verTodas").onclick = () => {
-  mostrarTodas = !mostrarTodas;
-  document.getElementById("verTodas").textContent = mostrarTodas ? "Mostrar menos" : "Ver todas parcelas";
-  calcularAtual();
-};
-
-input.addEventListener("input", e => {
-  let n = limparNumero(e.target.value);
-  input.value = n ? formatarMoeda(n) : "";
-  if (n) calcular(n);
-});
-
-function calcularAtual() {
-  const v = limparNumero(input.value);
-  if (v) calcular(v);
-}
-
-function calcular(valor) {
-  resultadoDiv.innerHTML = "";
-  if (modoSimulacao === "cartao") {
-    for (let n = 1; n <= 18; n++) {
-      let taxa = taxas[n] || 0;
-      if (txEspecialAtiva && n <= 3) taxa = 0;
-      const valorCorrigido = valor / (1 - taxa);
-      const parcela = arredondarParaCima(valorCorrigido / n);
-      const totalFinal = arredondarParaCima(parcela * n);
-      if (n > 12 && !mostrarTodas) continue;
-      let classes = "card";
-      if (n <= 3) classes += " destacada";
-      if (n > 12) classes += " opaca";
-      resultadoDiv.innerHTML += `
-        <div class="${classes}">
-          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-        </div>`;
-    }
-    document.getElementById("verTodas").style.display = "block";
-  } else {
-    document.getElementById("verTodas").style.display = "none";
-    Object.keys(coeficientesConsignado).sort((a, b) => a - b).forEach(n => {
-      const coef = coeficientesConsignado[n];
-      const parcela = arredondarParaCima(valor * coef);
-      const totalFinal = arredondarParaCima(parcela * n);
-      resultadoDiv.innerHTML += `
-        <div class="card">
-          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-        </div>`;
-    });
-  }
-}
-
-function arredondarParaCima(v) { return Math.ceil(v * 100) / 100; }
-function formatarMoeda(v) { return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
-function limparNumero(v) { return parseFloat(v.replace(/\D/g, "")) / 100; }
 </script>
 
 </body>
