@@ -106,13 +106,7 @@ const resultadoDiv = document.getElementById("resultado");
 
 // FUNÇÃO PARA TOGGLE DE CATEGORIA
 function toggleCategoria(cat, container, btn) {
-  if (!categoriasAtivas[cat]) {
-    // Marca a categoria como aberta apenas quando clicada pela primeira vez
-    categoriasAtivas[cat] = true;
-    
-    // Renderiza os produtos
-    renderProdutos();
-  }
+  categoriasAtivas[cat] = !categoriasAtivas[cat];
 
   // Ação para abrir ou fechar a categoria
   if (categoriasAtivas[cat]) {
