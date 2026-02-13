@@ -48,20 +48,20 @@ const produtos = [
 { nome: "Calcinha Fio", valor: 250.00, categoria:"Acessorios"},
 { nome: "Calcinha Tanga", valor: 580.00, categoria:"Acessorios"},
 
-{ nome: "Casal", valor: 6786.00, categoria:"ARS STAR Auto"},
-{ nome: "Queen Size", valor: 8143.00, categoria:"ARS STAR Auto"},
-{ nome: "King Size", valor: 10315.00, categoria:"ARS STAR Auto"},
-{ nome: "Solteiro", valor: 4524.00, categoria:"ARS STAR Auto"},
+{ nome: "STAR Casal", valor: 6786.00, categoria:"ARS STAR Auto"},
+{ nome: "STAR Queen Size", valor: 8143.00, categoria:"ARS STAR Auto"},
+{ nome: "STAR King Size", valor: 10315.00, categoria:"ARS STAR Auto"},
+{ nome: "STAR Solteiro", valor: 4524.00, categoria:"ARS STAR Auto"},
 
-{ nome: "Casal", valor: 9256.00, categoria:"ARS Evo Auto"},
-{ nome: "Queen Size", valor: 11107.00, categoria:"ARS Evo Auto"},
-{ nome: "King Size", valor: 14069.00, categoria:"ARS Evo Auto"},
-{ nome: "Solteiro", valor: 6171.00, categoria:"ARS Evo Auto"},
+{ nome: "Evo Auto Casal", valor: 9256.00, categoria:"ARS Evo Auto"},
+{ nome: "Evo Auto Queen Size", valor: 11107.00, categoria:"ARS Evo Auto"},
+{ nome: "Evo Auto King Size", valor: 14069.00, categoria:"ARS Evo Auto"},
+{ nome: "Evo Auto Solteiro", valor: 6171.00, categoria:"ARS Evo Auto"},
 
-{ nome: "Casal", valor: 13006.00, categoria:"ARS Evo Massagem"},
-{ nome: "Queen Size", valor: 14969.00, categoria:"ARS Evo Massagem"},
-{ nome: "King Size", valor: 18110.00, categoria:"ARS Evo Massagem"},
-{ nome: "Solteiro", valor: 9023.00, categoria:"ARS Evo Massagem"},
+{ nome: "Evo Massagem Casal", valor: 13006.00, categoria:"ARS Evo Massagem"},
+{ nome: "Evo Massagem Queen Size", valor: 14969.00, categoria:"ARS Evo Massagem"},
+{ nome: "Evo Massagem King Size", valor: 18110.00, categoria:"ARS Evo Massagem"},
+{ nome: "Evo Massagem Solteiro", valor: 9023.00, categoria:"ARS Evo Massagem"},
 
 { nome: "Soft Fir", valor: 510.00, categoria:"ARS Travesseiro"}
 ];
