@@ -170,7 +170,8 @@ input {
   text-align: center;
   font-size: 13px;
 }
-  .categoria-btn {
+
+.categoria-btn {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -219,15 +220,15 @@ input {
       <h1>Simulação</h1>
 
       <input 
-  type="text"
-  id="valor"
-  placeholder="R$ 0,00"
-  inputmode="numeric"
-  autocomplete="off"
-  autocorrect="off"
-  autocapitalize="off"
-  spellcheck="false"
-  name="valor-simulacao">
+        type="text"
+        id="valor"
+        placeholder="R$ 0,00"
+        inputmode="numeric"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        name="valor-simulacao">
 
       <div class="button-group">
         <button id="modoBtn" class="toggle-btn">Card</button>
@@ -274,40 +275,31 @@ const telaProdutos=document.getElementById("telaProdutos");
 const input=document.getElementById("valor");
 const resultadoDiv=document.getElementById("resultado");
 
-document.getElementById("abrirProdutos").onclick=()=>{
-  telaSimulador.classList.remove("ativa");
-  telaProdutos.classList.add("ativa");
-  renderProdutos();
-};
+document.getElementById("abrirProdutos").onclick=()=>{ telaSimulador.classList.remove("ativa"); telaProdutos.classList.add("ativa"); renderProdutos(); };
+document.getElementById("voltarSimulador").onclick=()=>{ telaProdutos.classList.remove("ativa"); telaSimulador.classList.add("ativa"); };
+document.getElementById("limparCarrinho").onclick=()=>{ carrinho={}; atualizarTotal(); renderProdutos(); };
 
-document.getElementById("voltarSimulador").onclick=()=>{
-  telaProdutos.classList.remove("ativa");
-  telaSimulador.classList.add("ativa");
-};
-
-document.getElementById("limparCarrinho").onclick=()=>{
-  carrinho={};
-  atualizarTotal();
-  renderProdutos();
-};
-
-// Objeto para controlar quais categorias estão abertas
+// Controle de categorias abertas
 let categoriasAtivas = {};
 
 function toggleCategoria(cat) {
-  categoriasAtivas[cat] = !categoriasAtivas[cat];
-  const div = document.getElementById("cat-" + cat);
-  if (div) {
-    div.style.display = categoriasAtivas[cat] ? "block" : "none";
+  const container = document.getElementById("cat-" + cat);
+  const btn = document.querySelector(`.categoria-btn[data-cat="${cat}"]`);
+  if (!container || !btn) return;
+
+  if (container.style.maxHeight && container.style.maxHeight !== "0px") {
+    container.style.maxHeight = "0px";
+    container.style.padding = "0";
+    btn.classList.remove("ativa");
+    categoriasAtivas[cat] = false;
+  } else {
+    container.style.maxHeight = container.scrollHeight + "px";
+    container.style.padding = "8px 0";
+    btn.classList.add("ativa");
+    categoriasAtivas[cat] = true;
   }
 
-  // Atualiza o ícone do título
-  const headers = document.querySelectorAll(".categoria-btn");
-  headers.forEach(h => {
-    if (h.dataset.cat === cat) {
-      h.textContent = `${cat} ${categoriasAtivas[cat] ? '▼' : '►'}`;
-    }
-  });
+  btn.textContent = `${cat} ${categoriasAtivas[cat] ? '▼' : '►'}`;
 }
 
 function renderProdutos() {
@@ -319,33 +311,20 @@ function renderProdutos() {
   produtos.forEach(p => {
     if (!produtosPorCategoria[p.categoria]) produtosPorCategoria[p.categoria] = [];
     produtosPorCategoria[p.categoria].push(p);
+
     if (carrinho[p.nome] === undefined) carrinho[p.nome] = 0;
   });
 
   // Renderiza cada categoria
   Object.keys(produtosPorCategoria).sort().forEach(cat => {
-    // Inicializa estado da categoria caso ainda não exista
     if (categoriasAtivas[cat] === undefined) categoriasAtivas[cat] = true;
 
-    // Botão de categoria
     area.innerHTML += `
-      <h3 
-        class="categoria-btn" 
-        data-cat="${cat}" 
-        style="
-          margin: 12px 0 6px 0; 
-          padding: 6px 10px; 
-          background: rgba(34, 197, 94, 0.2); 
-          border-radius: 10px; 
-          color: #16a34a;
-          font-weight: 600;
-          cursor: pointer;"
-        onclick="toggleCategoria('${cat}')">
+      <h3 class="categoria-btn ${categoriasAtivas[cat] ? 'ativa' : ''}" data-cat="${cat}" onclick="toggleCategoria('${cat}')">
         ${cat} ${categoriasAtivas[cat] ? '▼' : '►'}
       </h3>`;
 
-    // Container da categoria (expansível)
-    area.innerHTML += `<div id="cat-${cat}" style="display:${categoriasAtivas[cat] ? 'block' : 'none'};">`;
+    area.innerHTML += `<div id="cat-${cat}" class="categoria-produtos" style="max-height:${categoriasAtivas[cat] ? '1000px' : '0px'}; padding:${categoriasAtivas[cat] ? '8px 0' : '0'};">`;
 
     produtosPorCategoria[cat].forEach(p => {
       area.innerHTML += `
@@ -362,20 +341,16 @@ function renderProdutos() {
         </div>`;
     });
 
-    area.innerHTML += `</div>`; // fecha container da categoria
+    area.innerHTML += `</div>`;
   });
 }
 
 function atualizarTotal(){
   let total=0;
   produtos.forEach(p=> total+=p.valor*(carrinho[p.nome]||0));
-  if(total>0){
-    input.value=formatarMoeda(total);
-    calcular(total);
-  }else{
-    input.value="";
-    resultadoDiv.innerHTML="";
-  }
+  input.value= total>0 ? formatarMoeda(total) : "";
+  resultadoDiv.innerHTML = total>0 ? "" : "";
+  if(total>0) calcular(total);
 }
 
 /* ---------- SIMULAÇÃO (inalterada) ---------- */
@@ -384,17 +359,17 @@ function arredondarParaCima(v){return Math.ceil(v*100)/100;}
 function formatarMoeda(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});}
 function limparNumero(v){return parseFloat(v.replace(/\D/g,""))/100;}
 
-document.getElementById("modoBtn").onclick=()=>{
-  modoSimulacao=modoSimulacao==="cartao"?"consignado":"cartao";
-  document.getElementById("modoBtn").textContent=modoSimulacao==="cartao"?"Card":"Plano Especial";
-  document.getElementById("txespecBtn").style.display=modoSimulacao==="cartao"?"block":"none";
-  calcularAtual();
+document.getElementById("modoBtn").onclick=()=>{ 
+  modoSimulacao=modoSimulacao==="cartao"?"consignado":"cartao"; 
+  document.getElementById("modoBtn").textContent=modoSimulacao==="cartao"?"Card":"Plano Especial"; 
+  document.getElementById("txespecBtn").style.display=modoSimulacao==="cartao"?"block":"none"; 
+  calcularAtual(); 
 };
 
 document.getElementById("txespecBtn").onclick=()=>{
-  txEspecialAtiva=!txEspecialAtiva;
-  document.getElementById("txespecBtn").classList.toggle("ativo");
-  calcularAtual();
+  txEspecialAtiva=!txEspecialAtiva; 
+  document.getElementById("txespecBtn").classList.toggle("ativo"); 
+  calcularAtual(); 
 };
 
 document.getElementById("verTodas").onclick=()=>{
@@ -405,14 +380,13 @@ document.getElementById("verTodas").onclick=()=>{
 
 input.addEventListener("input",e=>{
   let n=limparNumero(e.target.value);
-  if(!n){resultadoDiv.innerHTML="";input.value="";return;}
-  input.value=formatarMoeda(n);
-  calcular(n);
+  input.value = n ? formatarMoeda(n) : "";
+  if(n) calcular(n);
 });
 
 function calcularAtual(){
   const v=limparNumero(input.value);
-  if(v)calcular(v);
+  if(v) calcular(v);
 }
 
 function calcular(valor){
@@ -435,7 +409,7 @@ function calcular(valor){
         </div>`;
     }
     document.getElementById("verTodas").style.display="block";
-  }else{
+  } else {
     document.getElementById("verTodas").style.display="none";
     Object.keys(coeficientesConsignado).sort((a,b)=>a-b).forEach(n=>{
       const coef=coeficientesConsignado[n];
@@ -447,48 +421,6 @@ function calcular(valor){
           <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
         </div>`;
     });
-  }
-}
-
-/* CACHE */
-
-document.getElementById("clearCacheBtn").onclick = async () => {
-
-  if ("caches" in window) {
-    const keys = await caches.keys();
-    for (let key of keys) {
-      await caches.delete(key);
-    }
-  }
-
-  localStorage.clear();
-  sessionStorage.clear();
-
-  if ("serviceWorker" in navigator) {
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    for (let registration of registrations) {
-      await registration.unregister();
-    }
-  }
-
-  alert("Aplicação resetada. Reinstale se necessário.");
-  location.reload();
-};
-
-if("serviceWorker"in navigator){
-  navigator.serviceWorker.register("service-worker.js");
-}
-  function toggleCategoria(id, btn) {
-  const container = document.getElementById(id);
-
-  if (container.style.maxHeight && container.style.maxHeight !== "0px") {
-    container.style.maxHeight = "0px";
-    container.style.padding = "0";
-    btn.classList.remove("ativa");
-  } else {
-    container.style.maxHeight = container.scrollHeight + "px";
-    container.style.padding = "8px 0";
-    btn.classList.add("ativa");
   }
 }
 </script>
